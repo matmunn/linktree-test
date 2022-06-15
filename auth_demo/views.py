@@ -4,7 +4,10 @@ from rest_framework import mixins, viewsets
 from rest_framework.permissions import IsAuthenticated
 
 from auth_demo.models import Advertisement, Message
-from auth_demo.permissions import HasCreatePermission
+from auth_demo.permissions import (
+    HasCreatePermission,
+    RequiresPremiumSubscriptionPermission,
+)
 from auth_demo.serialisers import AdvertisementSerialiser, MessageSerialiser
 
 
@@ -21,3 +24,4 @@ class AdvertisementViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
 
     serializer_class = AdvertisementSerialiser
     queryset = Advertisement.objects.all()
+    permission_classes = (IsAuthenticated, RequiresPremiumSubscriptionPermission)
