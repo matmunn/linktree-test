@@ -15,7 +15,7 @@ class UserSerialiser(serializers.ModelSerializer):
         fields = ("id", "username", "email")
 
 
-class UserRepresentationMixin:
+class UserRepresentationMixin(metaclass=serializers.SerializerMetaclass):
     """Mixin to reduce duplicated code modifying the user field on request/response."""
 
     user = serializers.CharField()
@@ -24,6 +24,13 @@ class UserRepresentationMixin:
         """Change the representation of the user in a response."""
         self.fields["user"] = UserSerialiser()
         return super().to_representation(instance)
+
+    def validate_user(self, value):
+        """Validate the user."""
+        try:
+            return User.objects.get(username=value)
+        except User.DoesNotExist:
+            raise serializers.ValidationError("User does not exist.") from None
 
 
 class MessageSerialiser(UserRepresentationMixin, serializers.ModelSerializer):
