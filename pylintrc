@@ -1,0 +1,69 @@
+[MASTER]
+ignore=migrations
+
+[MESSAGES CONTROL]
+# Justifications:
+# no-member: Django model attributes (Pylint doesn't properly interpret fields)
+# no-init: Meta classes on Django forms/models
+# old-style-class: As above
+# too-few-public-methods: As above
+# too-many-ancestors: Django class based views
+# too-many-instance-attributes: Bigger Django models
+# locally-disabled, locally-enabled: Allow ignoring rules locally
+# fixme: Useful to have
+# ungrouped-imports: Necessary for aloe step discovery in some cases
+# wrong-import-order: we are using isort for this
+# signature-differs: Using **kwargs to capture all keyword arguments is valid
+# unnecessary-pass: We need pass statements to make the code more readable
+# C0330, C0326: black suggests these be disabled
+# unsubscriptable-object: This is a calculated risk while running mypy.
+#                         https://github.com/PyCQA/pylint/issues/2822
+
+disable=
+    attribute-defined-outside-init,
+    too-few-public-methods,
+    no-member,
+    too-many-ancestors,
+    locally-disabled,
+    too-many-instance-attributes,
+    fixme,
+    ungrouped-imports,
+    wrong-import-order,
+    arguments-differ,
+    signature-differs,
+    unnecessary-pass,
+    unsubscriptable-object,
+    duplicate-code
+
+# Extra good-names for Django: pk, register, urlpatterns, User (cls from get_user_model())
+good-names=i,j,k,ex,logger,register,Run,_,pk,urlpatterns,User,id
+
+# Django model meta options are a public API
+exclude-protected=_meta
+
+reports=no
+output-format=colorized
+
+max-line-length = 88
+
+ignored-classes=Model
+
+[BASIC]
+class-attribute-rgx=([a-z_][a-z0-9_]{1,45}|[A-Z][A-Z0-9_]{1,45})$
+
+[VARIABLES]
+# List of additional names supposed to be defined in builtins.
+# When using django-split-settings, the settings are cascaded down so you
+# don't have to redifine them again in the next component
+# Pylint doesn't like this. So we tell Pylint that those names are built-ins
+additional-builtins=
+    BASE_DIR,
+    ENVIRONMENT,
+    DEBUG_ENVS,
+    DEBUG,
+    ALLOWED_HOSTS,
+    MY_SITE_DOMAIN,
+    SITE_URL,
+    INSTALLED_APPS,
+    LOGGING,
+    SSL_CA_FILE,
