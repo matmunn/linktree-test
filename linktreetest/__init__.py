@@ -1,0 +1,1 @@
+"""LinkTree developer challenge application."""
