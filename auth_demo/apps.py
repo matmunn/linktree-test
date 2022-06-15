@@ -3,8 +3,8 @@
 from django.apps import AppConfig
 
 
-class AuthConfig(AppConfig):
+class AuthDemoConfig(AppConfig):
     """Django app config."""
 
     default_auto_field = "django.db.models.BigAutoField"
-    name = "auth"
+    name = "auth_demo"

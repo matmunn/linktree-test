@@ -4,10 +4,16 @@ version = "0.1.0"
 description = ""
 authors = ["Mat Munn <mat@matmunn.me>"]
 
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+
 [tool.poetry.dependencies]
 python = "^3.8"
 Django = "3.2"
 djangorestframework = "^3.13.1"
+djangorestframework-simplejwt = {extras = ["crypto"], version = "^5.2.0"}
+drf-spectacular = "^0.22.1"
 
 [tool.poetry.dev-dependencies]
 pre-commit = "^2.19.0"
