@@ -2,6 +2,8 @@ version: '2'
 
 services:
   app:
+    # Force the platform to be linux/amd64: https://stackoverflow.com/questions/62807717/how-can-i-solve-postgresql-scram-authentifcation-problem#comment124700935_70238851
+    platform: linux/amd64
     build:
       context: .
     command: run
