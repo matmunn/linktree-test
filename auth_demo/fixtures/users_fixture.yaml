@@ -1,0 +1,91 @@
+- model: auth_demo.user
+  pk: 1
+  fields:
+    password: pbkdf2_sha256$260000$PEYIot4JINWBIkI7JulbPH$TyfMCk3nhE2RnrKXgM5slLTtDYvecQzOjaFiubkOLiw=
+    last_login: null
+    is_superuser: true
+    username: admin
+    first_name: ''
+    last_name: ''
+    email: ''
+    is_staff: true
+    is_active: true
+    date_joined: 2022-06-15 23:36:13.500282+00:00
+    paid_subscriber: false
+    groups: []
+    user_permissions: []
+    parents: []
+- model: auth_demo.user
+  pk: 2
+  fields:
+    password: pbkdf2_sha256$260000$hzs1ymK3KoAKwJX73PrjZs$Y5/A5DlMX5mSJOQiAdlW3aqF5DaQPA1HMMVdNOtEAD8=
+    last_login: null
+    is_superuser: false
+    username: Paul
+    first_name: ''
+    last_name: ''
+    email: ''
+    is_staff: false
+    is_active: true
+    date_joined: 2022-06-15 23:42:40.547922+00:00
+    paid_subscriber: false
+    groups: []
+    user_permissions: []
+    parents:
+    - 3
+    - 5
+- model: auth_demo.user
+  pk: 3
+  fields:
+    password: pbkdf2_sha256$260000$cPg6pygo2RDqQqGo1A5jXU$I6FsDN6ZvbQrzYgLUygA7zbbKe0aBan+hFeHd51Gom0=
+    last_login: null
+    is_superuser: false
+    username: Jane
+    first_name: ''
+    last_name: ''
+    email: ''
+    is_staff: false
+    is_active: true
+    date_joined: 2022-06-15 23:43:03.069352+00:00
+    paid_subscriber: true
+    groups: []
+    user_permissions: []
+    parents:
+    - 2
+- model: auth_demo.user
+  pk: 4
+  fields:
+    password: pbkdf2_sha256$260000$F912lMw3r1Zydvzw6jb2M5$70MhxyBz4cSZYJF42+FgQSXUUYcMP/bY0i5zcY3xHYM=
+    last_login: null
+    is_superuser: false
+    username: Tony
+    first_name: ''
+    last_name: ''
+    email: ''
+    is_staff: false
+    is_active: true
+    date_joined: 2022-06-15 23:43:32.558981+00:00
+    paid_subscriber: false
+    groups: []
+    user_permissions: []
+    parents:
+    - 5
+- model: auth_demo.user
+  pk: 5
+  fields:
+    password: pbkdf2_sha256$260000$ajT9TugklIG7HXOb1hM0a8$Esk6+WRH0HS6PxjsyfBxc6q3S6iSjJuyQ+EQyKseSxM=
+    last_login: null
+    is_superuser: false
+    username: John
+    first_name: ''
+    last_name: ''
+    email: ''
+    is_staff: false
+    is_active: true
+    date_joined: 2022-06-15 23:43:53.627037+00:00
+    paid_subscriber: true
+    groups: []
+    user_permissions: []
+    parents:
+    - 2
+    - 4

@@ -14,7 +14,9 @@ class HasCreatePermission(permissions.BasePermission):
         try:
             user = USER_MODEL.objects.get(username=username)
         except USER_MODEL.DoesNotExist:
-            return False
+            # Choosing to return True here so that we progress to where
+            # validation fails.
+            return True
 
         return current_user in user.parents.all()
 
@@ -43,11 +45,13 @@ class RequiresPremiumSubscriptionPermission(permissions.BasePermission):
         requested_user = request.data.get("user")
 
         try:
-            user = USER_MODEL.objects.get(username=requested_user)
+            for_user = USER_MODEL.objects.get(username=requested_user)
         except USER_MODEL.DoesNotExist:
-            return False
+            # Choosing to return True here so that we progress to where
+            # validation fails.
+            return True
 
         if requested_user != request.user.username:
-            return user.paid_subscriber and request.user in user.parents.all()
+            return for_user.paid_subscriber and request.user in for_user.parents.all()
 
-        return request.user.paid_subscriber
+        return request.user.is_staff or request.user.paid_subscriber

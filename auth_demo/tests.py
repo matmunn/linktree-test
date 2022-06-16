@@ -3,7 +3,7 @@
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
-from auth_demo.factories import UserFactory
+from auth_demo.factories import AdvertisementFactory, MessageFactory, UserFactory
 
 
 class MessagesTestCase(APITestCase):
@@ -29,6 +29,19 @@ class MessagesTestCase(APITestCase):
         )
 
         self.assertEqual(response.status_code, 201)
+
+    def test_user_cant_create_message_for_nonexistent_user(self):
+        """Test an authenticated user can't create a message for non-existent user."""
+        user = UserFactory()
+        self.client.force_login(user)
+
+        url = reverse("message-list")
+        response = self.client.post(
+            url, {"message": "Hello", "user": "cow-says-moo"}, format="json"
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertIn(b"User does not exist", response.content)
 
     def test_allowed_user_can_create_message_for_another(self):
         """Test a user can create a message for another user with permission."""
@@ -61,6 +74,20 @@ class MessagesTestCase(APITestCase):
         )
 
         self.assertEqual(response.status_code, 403)
+
+    def test_user_can_list_messages(self):
+        """Test a user can list messages that already exist."""
+        user = UserFactory()
+        for _ in range(3):
+            MessageFactory()
+
+        self.client.force_login(user)
+
+        url = reverse("message-list")
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()), 3)
 
 
 class AdvertisementsTestCase(APITestCase):
@@ -146,3 +173,31 @@ class AdvertisementsTestCase(APITestCase):
         )
 
         self.assertEqual(response.status_code, 403)
+
+    def test_user_cant_create_ad_for_nonexistent_user(self):
+        """Test an ad can't be created for a user who doesn't exist."""
+        user = UserFactory()
+
+        self.client.force_login(user)
+
+        url = reverse("advertisement-list")
+        response = self.client.post(
+            url, {"advertisement": "Hello", "user": "bleep-bloop"}, format="json"
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertIn(b"User does not exist", response.content)
+
+    def test_free_user_can_list_ads(self):
+        """Test a free user can list ads that already exist."""
+        user = UserFactory()
+        for _ in range(5):
+            AdvertisementFactory()
+
+        self.client.force_login(user)
+
+        url = reverse("advertisement-list")
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()), 5)
