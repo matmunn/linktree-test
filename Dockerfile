@@ -2,8 +2,8 @@ FROM python:3.10-bullseye
 
 RUN groupadd -r app && \
     useradd -r -g app app && \
-    mkdir -p /app /virtualenv && \
-    chown -R app: /app /virtualenv
+    mkdir -p /app /virtualenv /static && \
+    chown -R app: /app /virtualenv /static
 
 ENV PYTHONFAULTHANDLER 1 \
     PYTHONUNBUFFERED=1 \

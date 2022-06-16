@@ -5,8 +5,15 @@ VIRTUALENV_BASE="${VIRTUALENV_BASE:-/virtualenv}"
 
 case "$1" in
     deploy)
+        ./manage.py collectstatic --no-input
         ./manage.py migrate --no-input  # Migrate database
         ./manage.py loaddata auth_fixture # Load our fixture
+        ;;
+
+    test)
+        poetry install
+        coverage run ./manage.py test -v 3
+        coverage report
         ;;
 
     install-deps)

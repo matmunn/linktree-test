@@ -9,7 +9,11 @@ export PORT
 case "$1" in
     run)
         . ./app.sh deploy
-        exec gunicorn -b 0.0.0.0:8000 linktreetest.wsgi:application
+        exec gunicorn -b 0.0.0.0:8000 --worker-class=gevent --timeout=90 linktreetest.wsgi:application
+        ;;
+
+    test)
+        . ./app.sh test
         ;;
 
     *)
