@@ -2,10 +2,10 @@
 
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import mixins, viewsets
-from rest_framework.permissions import IsAuthenticated
 
 from auth_demo.models import Advertisement, Message
 from auth_demo.permissions import (
+    AuthenticatedOrThirdPartyAppPermission,
     HasCreatePermission,
     RequiresPremiumSubscriptionPermission,
 )
@@ -18,7 +18,10 @@ class AuthenticationPermissionForCreateMixin:
     def get_permissions(self):
         """Instantiate and return the list of permissions that this view requires."""
         if self.action == "create":
-            self.permission_classes = [IsAuthenticated, *self.permission_classes]
+            self.permission_classes = [
+                AuthenticatedOrThirdPartyAppPermission,
+                *self.permission_classes,
+            ]
 
         return super().get_permissions()
 

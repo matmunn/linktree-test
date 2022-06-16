@@ -3,7 +3,14 @@
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
-from auth_demo.factories import AdvertisementFactory, MessageFactory, UserFactory
+from auth_demo.factories import (
+    AdvertisementFactory,
+    MessageFactory,
+    SubscriptionFactory,
+    ThirdPartyAppActionPermissionFactory,
+    ThirdPartyAppFactory,
+    UserFactory,
+)
 
 
 class MessagesTestCase(APITestCase):
@@ -201,3 +208,142 @@ class AdvertisementsTestCase(APITestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.json()), 5)
+
+
+class ThirdPartyAppTestCase(APITestCase):
+    """Tests for third-party app behaviours."""
+
+    def test_an_app_can_create_a_message_for_a_subscriber(self):
+        """Test an app can create a message for a subscriber."""
+        user = UserFactory()
+
+        app = ThirdPartyAppFactory()
+        ThirdPartyAppActionPermissionFactory(
+            app=app, action="create", url_name="message-list"
+        )
+        SubscriptionFactory(user=user, app=app)
+
+        url = reverse("message-list")
+        response = self.client.post(
+            url,
+            {"user": user.username, "message": "What a cool message"},
+            format="json",
+            HTTP_X_EXTERNAL_APP=app.app_name,
+        )
+
+        self.assertEqual(response.status_code, 201)
+
+    def test_an_app_cant_create_a_message_for_a_non_subscriber(self):
+        """Test an app can't create a message for a non-subscriber."""
+        user = UserFactory()
+
+        app = ThirdPartyAppFactory()
+        ThirdPartyAppActionPermissionFactory(
+            app=app, action="create", url_name="message-list"
+        )
+
+        url = reverse("message-list")
+        response = self.client.post(
+            url,
+            {"user": user.username, "message": "What a cool message"},
+            format="json",
+            HTTP_X_EXTERNAL_APP=app.app_name,
+        )
+
+        self.assertEqual(response.status_code, 403)
+
+    def test_an_app_can_create_an_advert_for_a_subscriber(self):
+        """Test an app can create an advert for a subscriber."""
+        user = UserFactory(paid_subscriber=True)
+
+        app = ThirdPartyAppFactory()
+        ThirdPartyAppActionPermissionFactory(
+            app=app, action="create", url_name="advertisement-list"
+        )
+        SubscriptionFactory(user=user, app=app)
+
+        url = reverse("advertisement-list")
+        response = self.client.post(
+            url,
+            {
+                "user": user.username,
+                "advertisement": "Would you consider buying our thing",
+            },
+            format="json",
+            HTTP_X_EXTERNAL_APP=app.app_name,
+        )
+
+        self.assertEqual(response.status_code, 201)
+
+    def test_an_app_cant_create_an_advert_for_a_non_subscriber(self):
+        """Test an app can't create an advert for a non-subscriber."""
+        user = UserFactory(paid_subscriber=True)
+
+        app = ThirdPartyAppFactory()
+        ThirdPartyAppActionPermissionFactory(
+            app=app, action="create", url_name="advertisement-list"
+        )
+
+        url = reverse("advertisement-list")
+        response = self.client.post(
+            url,
+            {"user": user.username, "advertisement": "Do it, buy our thing"},
+            format="json",
+            HTTP_X_EXTERNAL_APP=app.app_name,
+        )
+
+        self.assertEqual(response.status_code, 403)
+
+    def test_an_app_cant_create_an_advert_for_a_subscriber_with_a_free_account(self):
+        """Test an app can't create an advert for a subscriber with a free account."""
+        user = UserFactory()
+
+        app = ThirdPartyAppFactory()
+        ThirdPartyAppActionPermissionFactory(
+            app=app, action="create", url_name="advertisement-list"
+        )
+        SubscriptionFactory(user=user, app=app)
+
+        url = reverse("advertisement-list")
+        response = self.client.post(
+            url,
+            {"user": user.username, "advertisement": "Do it, buy our thing"},
+            format="json",
+            HTTP_X_EXTERNAL_APP=app.app_name,
+        )
+
+        self.assertEqual(response.status_code, 403)
+
+    def test_an_app_cant_create_a_message_if_it_doesnt_have_permission(self):
+        """Test that an app can't create a message if it doesn't have permission."""
+        user = UserFactory()
+
+        app = ThirdPartyAppFactory()
+        SubscriptionFactory(user=user, app=app)
+
+        url = reverse("message-list")
+        response = self.client.post(
+            url,
+            {"user": user.username, "message": "What a cool message"},
+            format="json",
+            HTTP_X_EXTERNAL_APP=app.app_name,
+        )
+
+        self.assertEqual(response.status_code, 403)
+
+    def test_an_app_cant_create_an_advert_if_it_doesnt_have_permission(self):
+        """Test that an app can't create an advert if it doesn't have permission."""
+        user = UserFactory(paid_subscriber=True)
+
+        app = ThirdPartyAppFactory()
+        SubscriptionFactory(user=user, app=app)
+
+        url = reverse("advertisement-list")
+        response = self.client.post(
+            url,
+            {"user": user.username, "advertisement": "What a cool message"},
+            format="json",
+            HTTP_X_EXTERNAL_APP=app.app_name,
+        )
+
+        self.assertEqual(response.status_code, 403)
