@@ -89,3 +89,64 @@
     parents:
     - 2
     - 4
+- model: auth_demo.thirdpartyapp
+  pk: 1
+  fields:
+    app_name: MessyApp
+- model: auth_demo.thirdpartyapp
+  pk: 2
+  fields:
+    app_name: SuperApp
+- model: auth_demo.thirdpartyapp
+  pk: 3
+  fields:
+    app_name: MoneyApp
+- model: auth_demo.thirdpartyappactionpermission
+  pk: 1
+  fields:
+    app: 1
+    action: create
+    url_name: message-list
+- model: auth_demo.thirdpartyappactionpermission
+  pk: 2
+  fields:
+    app: 2
+    action: create
+    url_name: message-list
+- model: auth_demo.thirdpartyappactionpermission
+  pk: 3
+  fields:
+    app: 2
+    action: create
+    url_name: advertisement-list
+- model: auth_demo.thirdpartyappactionpermission
+  pk: 4
+  fields:
+    app: 3
+    action: create
+    url_name: advertisement-list
+- model: auth_demo.subscription
+  pk: 1
+  fields:
+    user: 2
+    app: 1
+- model: auth_demo.subscription
+  pk: 2
+  fields:
+    user: 3
+    app: 2
+- model: auth_demo.subscription
+  pk: 3
+  fields:
+    user: 3
+    app: 1
+- model: auth_demo.subscription
+  pk: 4
+  fields:
+    user: 4
+    app: 3
+- model: auth_demo.subscription
+  pk: 5
+  fields:
+    user: 5
+    app: 3
