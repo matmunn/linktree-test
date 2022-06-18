@@ -1,7 +1,7 @@
 """Auth app views."""
 
-from drf_spectacular.utils import extend_schema, extend_schema_view
-from rest_framework import mixins, viewsets
+from drf_spectacular.utils import extend_schema, extend_schema_view, inline_serializer
+from rest_framework import fields, mixins, viewsets
 
 from auth_demo.models import Advertisement, Message
 from auth_demo.permissions import (
@@ -9,7 +9,11 @@ from auth_demo.permissions import (
     HasCreatePermission,
     RequiresPremiumSubscriptionPermission,
 )
-from auth_demo.serialisers import AdvertisementSerialiser, MessageSerialiser
+from auth_demo.serialisers import (
+    AdvertisementSerialiser,
+    MessageSerialiser,
+    UserSerialiser,
+)
 
 
 class AuthenticationPermissionForCreateMixin:
@@ -29,9 +33,25 @@ class AuthenticationPermissionForCreateMixin:
 @extend_schema_view(
     list=extend_schema(
         description="List all the messages.",
+        responses=inline_serializer(
+            "MessageResponseSerialiser",
+            {
+                "id": fields.IntegerField(),
+                "user": UserSerialiser(),
+                "message": fields.CharField(),
+            },
+        ),
     ),
     create=extend_schema(
         description="Create a new message.",
+        responses=inline_serializer(
+            "MessageResponseSerialiser",
+            {
+                "id": fields.IntegerField(),
+                "user": UserSerialiser(),
+                "message": fields.CharField(),
+            },
+        ),
     ),
 )
 class MessageViewSet(
@@ -52,9 +72,25 @@ class MessageViewSet(
 @extend_schema_view(
     list=extend_schema(
         description="List all the advertisements.",
+        responses=inline_serializer(
+            "AdvertisementResponseSerialiser",
+            {
+                "id": fields.IntegerField(),
+                "user": UserSerialiser(),
+                "advertisement": fields.CharField(),
+            },
+        ),
     ),
     create=extend_schema(
         description="Create a new advertisement.",
+        responses=inline_serializer(
+            "AdvertisementResponseSerialiser",
+            {
+                "id": fields.IntegerField(),
+                "user": UserSerialiser(),
+                "advertisement": fields.CharField(),
+            },
+        ),
     ),
 )
 class AdvertisementViewSet(
